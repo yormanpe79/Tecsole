@@ -18,6 +18,34 @@ EMAIL_ORIGEN = "tecsoleproyectos@gmail.com"
 EMAIL_PASSWORD = "clwy jaff odav ilzu"
 EMAIL_DESTINO = "ingenieria@tecsole.com"
 
+@app.route('/api/visita', methods=['POST'])
+def registrar_visita():
+    # 1. Obtener Datos del Request (Headers de Vercel)
+    city = request.headers.get('x-vercel-ip-city', 'Desconocida')
+    country = request.headers.get('x-vercel-ip-country', 'Desconocido')
+    ip = request.headers.get('x-forwarded-for', request.remote_addr)
+    user_agent = request.headers.get('User-Agent', 'Desconocido')
+    
+    # 2. Formatear Mensaje Telegram
+    msg_visita = (
+        f"🔔 *NUEVA VISITA WEB*\n\n"
+        f"📍 *Ciudad:* {city}\n"
+        f"🌍 *País:* {country}\n"
+        f"💻 *IP:* {ip}\n"
+        f"📱 *Dispositivo:* {user_agent}"
+    )
+    
+    # 3. Enviar a Telegram
+    try:
+        telegram_url = f"https://api.telegram.org/bot{TELEGRAM_TOKEN}/sendMessage"
+        payload = {"chat_id": CHAT_ID, "text": msg_visita, "parse_mode": "Markdown"}
+        requests.post(telegram_url, json=payload)
+        return jsonify({"status": "ok", "mensaje": "Visita registrada"})
+    except Exception as e:
+        return jsonify({"status": "error", "error": str(e)}), 500
+
+
+
 @app.route('/api/enviar', methods=['POST'])
 def enviar_cotizacion():
     # 1. Obtener datos del JSON enviado por el frontend
