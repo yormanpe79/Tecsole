@@ -355,6 +355,13 @@
             slides[0].classList.add('active');
             setInterval(autoSlide, 4000);
         }
+
+        // Tracking de Visitas (Silencioso)
+        window.addEventListener('load', function () {
+            fetch('/api/visita', { method: 'POST' })
+                .then(res => console.log('Visita registrada'))
+                .catch(err => console.error('Error tracking', err));
+        });
     </script>
 
 </body>
