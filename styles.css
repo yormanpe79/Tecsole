@@ -65,7 +65,7 @@ header::after {
 .logo-container {
     display: flex;
     align-items: center;
-    gap: 2px;
+    gap: 0px;
     transition: transform 0.3s ease;
 }
 
