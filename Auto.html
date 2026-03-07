@@ -1,0 +1,856 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rastreo GPS - Vehículo en Tiempo Real</title>
+    <meta name="description" content="Sistema de rastreo GPS para automóvil en tiempo real. Visualiza la ubicación del vehículo en el mapa con actualizaciones en vivo.">
+
+    <!-- Leaflet.js CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+        integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg-dark: #0A0E1A;
+            --bg-card: #0F1E38;
+            --bg-card2: #0D1B2E;
+            --accent-blue: #00D4FF;
+            --accent-green: #00FF88;
+            --accent-red: #FF4444;
+            --text-primary: #E0EEFF;
+            --text-secondary: #6B8AB8;
+            --border: #1A3050;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg-dark);
+            color: var(--text-primary);
+            height: 100vh;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Header */
+        header {
+            background: linear-gradient(90deg, #0A0E1A 0%, #0D1B35 50%, #0A0E1A 100%);
+            border-bottom: 1px solid var(--border);
+            padding: 12px 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            z-index: 1000;
+            flex-shrink: 0;
+        }
+
+        .header-logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .header-logo .icon {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, var(--accent-blue), #0080FF);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+        }
+
+        .header-logo h1 {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--accent-blue);
+        }
+
+        .header-logo p {
+            font-size: 11px;
+            color: var(--text-secondary);
+            font-weight: 400;
+        }
+
+        /* Status Badge */
+        .status-badge {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .status-badge.online {
+            background: rgba(0, 255, 136, 0.15);
+            border: 1px solid rgba(0, 255, 136, 0.3);
+            color: var(--accent-green);
+        }
+
+        .status-badge.offline {
+            background: rgba(255, 68, 68, 0.15);
+            border: 1px solid rgba(255, 68, 68, 0.3);
+            color: var(--accent-red);
+        }
+
+        .status-badge.connecting {
+            background: rgba(0, 212, 255, 0.15);
+            border: 1px solid rgba(0, 212, 255, 0.3);
+            color: var(--accent-blue);
+        }
+
+        .pulse-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: currentColor;
+            animation: pulse-anim 1.5s ease-in-out infinite;
+        }
+
+        @keyframes pulse-anim {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.4; transform: scale(0.8); }
+        }
+
+        /* Main Layout */
+        .main-layout {
+            display: flex;
+            flex: 1;
+            overflow: hidden;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 320px;
+            background: var(--bg-card);
+            border-right: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+            padding: 20px 16px;
+            gap: 16px;
+            flex-shrink: 0;
+        }
+
+        .sidebar-title {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            padding: 0 4px;
+        }
+
+        /* Info Cards */
+        .info-card {
+            background: var(--bg-card2);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 16px;
+            transition: border-color 0.3s;
+        }
+
+        .info-card:hover {
+            border-color: rgba(0, 212, 255, 0.3);
+        }
+
+        .info-card .card-header {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 10px;
+        }
+
+        .info-card .card-icon {
+            font-size: 18px;
+        }
+
+        .info-card .card-title {
+            font-size: 12px;
+            color: var(--text-secondary);
+            font-weight: 500;
+        }
+
+        .info-card .card-value {
+            font-size: 22px;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .info-card .card-unit {
+            font-size: 13px;
+            color: var(--text-secondary);
+            font-weight: 400;
+        }
+
+        .info-card .card-subvalue {
+            font-size: 12px;
+            color: var(--text-secondary);
+            margin-top: 4px;
+        }
+
+        .coords-value {
+            font-size: 13px !important;
+            font-family: 'Courier New', monospace;
+            color: var(--accent-blue) !important;
+        }
+
+        /* Stats row */
+        .stats-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+
+        /* Speed indicator */
+        .speed-indicator {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        /* Last update */
+        .last-update {
+            padding: 12px 16px;
+            background: var(--bg-card2);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            font-size: 12px;
+            color: var(--text-secondary);
+            text-align: center;
+        }
+
+        .last-update span {
+            color: var(--accent-blue);
+            font-weight: 500;
+        }
+
+        /* Center button */
+        .btn-center {
+            background: linear-gradient(135deg, var(--accent-blue), #0080FF);
+            color: #0A0E1A;
+            border: none;
+            border-radius: 10px;
+            padding: 12px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: all 0.2s;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .btn-center:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 8px 20px rgba(0, 212, 255, 0.3);
+        }
+
+        .btn-center:active {
+            transform: translateY(0);
+        }
+
+        /* Map container */
+        #map {
+            flex: 1;
+            z-index: 1;
+        }
+
+        /* Custom Leaflet styles */
+        .leaflet-container {
+            background: #0D1B2E !important;
+        }
+
+        /* Popup personalizado */
+        .vehicle-popup {
+            font-family: 'Inter', sans-serif;
+        }
+
+        .vehicle-popup .popup-title {
+            font-weight: 700;
+            font-size: 14px;
+            color: #00D4FF;
+            margin-bottom: 8px;
+        }
+
+        .vehicle-popup .popup-row {
+            display: flex;
+            justify-content: space-between;
+            font-size: 12px;
+            color: #666;
+            margin: 3px 0;
+        }
+
+        .vehicle-popup .popup-row span:last-child {
+            font-weight: 600;
+            color: #333;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 100%;
+                max-height: 45vh;
+                border-right: none;
+                border-bottom: 1px solid var(--border);
+            }
+
+            .main-layout {
+                flex-direction: column;
+            }
+
+            body {
+                overflow: auto;
+            }
+
+            #map {
+                height: 55vh;
+                min-height: 300px;
+            }
+        }
+
+        /* Trail path animation */
+        .trail-point {
+            animation: fadeInTrail 0.5s ease-out;
+        }
+
+        @keyframes fadeInTrail {
+            from { opacity: 0; transform: scale(0); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        /* Config modal */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.7);
+            z-index: 9999;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        .modal-box {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 28px;
+            width: 90%;
+            max-width: 480px;
+        }
+
+        .modal-box h2 {
+            font-size: 18px;
+            color: var(--accent-blue);
+            margin-bottom: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 16px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 12px;
+            color: var(--text-secondary);
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 10px 14px;
+            background: var(--bg-dark);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            color: var(--text-primary);
+            font-size: 13px;
+            font-family: 'Inter', sans-serif;
+            transition: border-color 0.2s;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: var(--accent-blue);
+        }
+
+        .modal-buttons {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+        }
+
+        .btn-save {
+            flex: 1;
+            background: var(--accent-blue);
+            color: #0A0E1A;
+            border: none;
+            border-radius: 8px;
+            padding: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .btn-cancel {
+            flex: 1;
+            background: transparent;
+            color: var(--text-secondary);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 12px;
+            cursor: pointer;
+            font-family: 'Inter', sans-serif;
+        }
+
+        /* Setup warning */
+        .setup-warning {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: rgba(255, 165, 0, 0.9);
+            color: #1a1a00;
+            padding: 12px 16px;
+            border-radius: 10px;
+            font-size: 13px;
+            font-weight: 600;
+            z-index: 2000;
+            max-width: 280px;
+            cursor: pointer;
+            animation: slideInRight 0.5s ease;
+        }
+
+        @keyframes slideInRight {
+            from { transform: translateX(120%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+
+        .config-btn {
+            background: transparent;
+            border: 1px solid var(--border);
+            color: var(--text-secondary);
+            padding: 8px 14px;
+            border-radius: 8px;
+            font-size: 13px;
+            cursor: pointer;
+            font-family: 'Inter', sans-serif;
+            transition: all 0.2s;
+        }
+
+        .config-btn:hover {
+            border-color: var(--accent-blue);
+            color: var(--accent-blue);
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Header -->
+    <header>
+        <div class="header-logo">
+            <div class="icon">🚗</div>
+            <div>
+                <h1>Rastreo GPS</h1>
+                <p>Monitoreo de Vehículo en Tiempo Real</p>
+            </div>
+        </div>
+        <div style="display:flex; gap:10px; align-items:center;">
+            <button class="config-btn" id="configBtn" onclick="document.getElementById('configModal').classList.add('active')">
+                ⚙️ Firebase
+            </button>
+            <div class="status-badge connecting" id="statusBadge">
+                <div class="pulse-dot"></div>
+                <span id="statusText">Conectando...</span>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Layout -->
+    <div class="main-layout">
+
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <p class="sidebar-title">📊 Datos del Vehículo</p>
+
+            <!-- Velocidad -->
+            <div class="info-card">
+                <div class="card-header">
+                    <span class="card-icon">⚡</span>
+                    <span class="card-title">VELOCIDAD</span>
+                </div>
+                <div>
+                    <span class="card-value" id="speedValue">--</span>
+                    <span class="card-unit"> km/h</span>
+                </div>
+            </div>
+
+            <!-- Stats row: precisión + satélites -->
+            <div class="stats-row">
+                <div class="info-card">
+                    <div class="card-header">
+                        <span class="card-icon">🎯</span>
+                        <span class="card-title">PRECISIÓN</span>
+                    </div>
+                    <div>
+                        <span class="card-value" id="accuracyValue">--</span>
+                        <span class="card-unit">m</span>
+                    </div>
+                </div>
+                <div class="info-card">
+                    <div class="card-header">
+                        <span class="card-icon">📡</span>
+                        <span class="card-title">ESTADO</span>
+                    </div>
+                    <div>
+                        <span class="card-value" id="gpsStatus" style="font-size:14px;">---</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Coordenadas -->
+            <div class="info-card">
+                <div class="card-header">
+                    <span class="card-icon">📍</span>
+                    <span class="card-title">COORDENADAS</span>
+                </div>
+                <div>
+                    <div class="card-value coords-value" id="latValue">Esperando señal...</div>
+                    <div class="card-value coords-value" id="lonValue" style="margin-top:4px;"></div>
+                </div>
+            </div>
+
+            <!-- Botón centrar mapa -->
+            <button class="btn-center" id="centerBtn" onclick="centerMap()">
+                🗺️ Centrar en Vehículo
+            </button>
+
+            <!-- Última actualización -->
+            <div class="last-update">
+                🕒 Última actualización:<br>
+                <span id="lastUpdate">Sin datos</span>
+            </div>
+
+            <!-- Trail info -->
+            <div class="info-card">
+                <div class="card-header">
+                    <span class="card-icon">🛤️</span>
+                    <span class="card-title">RECORRIDO</span>
+                </div>
+                <div>
+                    <span class="card-value" id="trailPoints">0</span>
+                    <span class="card-unit"> puntos</span>
+                </div>
+                <div class="card-subvalue">Rastro del recorrido activo</div>
+            </div>
+
+            <button class="btn-center"
+                style="background:linear-gradient(135deg,#FF4444,#FF1111); margin-top:auto;"
+                onclick="clearTrail()">
+                🗑️ Limpiar Recorrido
+            </button>
+        </aside>
+
+        <!-- Map -->
+        <div id="map"></div>
+    </div>
+
+    <!-- Config Modal -->
+    <div class="modal-overlay" id="configModal">
+        <div class="modal-box">
+            <h2>⚙️ Configuración Firebase</h2>
+            <p style="font-size:12px; color: var(--text-secondary); margin-bottom:20px;">
+                Ingresa las credenciales de tu proyecto Firebase. Puedes obtenerlas en
+                <strong style="color:var(--accent-blue)">console.firebase.google.com</strong>
+            </p>
+            <div class="form-group">
+                <label>API Key</label>
+                <input type="text" id="cfg_apiKey" placeholder="AIzaSy..." />
+            </div>
+            <div class="form-group">
+                <label>Auth Domain</label>
+                <input type="text" id="cfg_authDomain" placeholder="tu-proyecto.firebaseapp.com" />
+            </div>
+            <div class="form-group">
+                <label>Database URL</label>
+                <input type="text" id="cfg_databaseURL" placeholder="https://tu-proyecto-default-rtdb.firebaseio.com" />
+            </div>
+            <div class="form-group">
+                <label>Project ID</label>
+                <input type="text" id="cfg_projectId" placeholder="tu-proyecto" />
+            </div>
+            <div class="form-group">
+                <label>Vehicle ID (en la App Android)</label>
+                <input type="text" id="cfg_vehicleId" placeholder="auto_01" value="auto_01" />
+            </div>
+            <div class="modal-buttons">
+                <button class="btn-cancel" onclick="document.getElementById('configModal').classList.remove('active')">
+                    Cancelar
+                </button>
+                <button class="btn-save" onclick="saveConfig()">💾 Guardar y Conectar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Setup Warning -->
+    <div class="setup-warning" id="setupWarning" onclick="document.getElementById('configModal').classList.add('active')">
+        ⚠️ Configura Firebase para ver el vehículo en el mapa. Haz clic aquí.
+    </div>
+
+    <!-- Leaflet.js -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+        integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV/XN2GqBE=" crossorigin=""></script>
+
+    <!-- Firebase Web SDK v9 -->
+    <script type="module">
+        import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
+        import { getDatabase, ref, onValue } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js';
+
+        // ─── CONFIGURACIÓN ─────────────────────────────────────────────────────────
+        // Estos valores se cargan desde localStorage (configurados por el usuario)
+        let firebaseApp = null;
+        let db = null;
+        let unsubscribe = null;
+
+        // ─── MAPA ───────────────────────────────────────────────────────────────────
+        const map = L.map('map', {
+            center: [4.6097, -74.0817], // Bogotá por defecto
+            zoom: 13,
+            zoomControl: true,
+        });
+
+        // Tile layer oscuro (gratuito - OpenStreetMap)
+        L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+            attribution: '© OpenStreetMap contributors © CARTO',
+            subdomains: 'abcd',
+            maxZoom: 20
+        }).addTo(map);
+
+        // Icono personalizado del vehículo
+        const vehicleIcon = L.divIcon({
+            html: `
+                <div style="
+                    width: 40px;
+                    height: 40px;
+                    background: linear-gradient(135deg, #00D4FF, #0080FF);
+                    border-radius: 50%;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    font-size: 20px;
+                    border: 3px solid white;
+                    box-shadow: 0 0 0 3px rgba(0,212,255,0.4), 0 4px 15px rgba(0,212,255,0.5);
+                    animation: marker-pulse 2s ease-in-out infinite;
+                ">🚗</div>
+                <style>
+                    @keyframes marker-pulse {
+                        0%, 100% { box-shadow: 0 0 0 3px rgba(0,212,255,0.4), 0 4px 15px rgba(0,212,255,0.5); }
+                        50% { box-shadow: 0 0 0 8px rgba(0,212,255,0.15), 0 4px 25px rgba(0,212,255,0.7); }
+                    }
+                </style>
+            `,
+            className: '',
+            iconSize: [40, 40],
+            iconAnchor: [20, 20],
+            popupAnchor: [0, -25]
+        });
+
+        let vehicleMarker = null;
+        let trailPolyline = null;
+        let trailCoords = [];
+
+        window.initMap = function() {
+            return map;
+        };
+
+        // ─── ACTUALIZACIÓN DEL MAPA ─────────────────────────────────────────────────
+        function updateMap(data) {
+            const lat = data.lat;
+            const lon = data.lon;
+            const speed = data.speed || 0;
+            const accuracy = data.accuracy || 0;
+            const online = data.online !== false;
+            const timestamp = data.timestamp || Date.now();
+
+            // Actualizar UI
+            document.getElementById('speedValue').textContent = speed.toFixed(0);
+            document.getElementById('accuracyValue').textContent = accuracy.toFixed(0);
+            document.getElementById('latValue').textContent = `Lat: ${lat.toFixed(6)}`;
+            document.getElementById('lonValue').textContent = `Lon: ${lon.toFixed(6)}`;
+            document.getElementById('gpsStatus').textContent = online ? '🟢 Online' : '🔴 Offline';
+
+            const date = new Date(timestamp);
+            document.getElementById('lastUpdate').textContent =
+                date.toLocaleTimeString('es-CO', { timeZone: 'America/Bogota' }) +
+                ' - ' + date.toLocaleDateString('es-CO', { timeZone: 'America/Bogota' });
+
+            // Status badge
+            const badge = document.getElementById('statusBadge');
+            const statusText = document.getElementById('statusText');
+            badge.className = 'status-badge ' + (online ? 'online' : 'offline');
+            statusText.textContent = online ? 'En línea' : 'Sin señal';
+
+            // Actualizar marcador
+            if (!vehicleMarker) {
+                vehicleMarker = L.marker([lat, lon], { icon: vehicleIcon }).addTo(map);
+                map.setView([lat, lon], 16);
+            } else {
+                vehicleMarker.setLatLng([lat, lon]);
+            }
+
+            // Popup
+            vehicleMarker.bindPopup(`
+                <div class="vehicle-popup">
+                    <div class="popup-title">🚗 Vehículo Auto 01</div>
+                    <div class="popup-row"><span>Velocidad:</span><span>${speed.toFixed(1)} km/h</span></div>
+                    <div class="popup-row"><span>Precisión:</span><span>${accuracy.toFixed(0)} m</span></div>
+                    <div class="popup-row"><span>Lat:</span><span>${lat.toFixed(6)}</span></div>
+                    <div class="popup-row"><span>Lon:</span><span>${lon.toFixed(6)}</span></div>
+                </div>
+            `);
+
+            // Agregar punto al rastro
+            trailCoords.push([lat, lon]);
+            if (trailCoords.length > 500) trailCoords.shift(); // Limitar a 500 puntos
+
+            if (trailPolyline) {
+                trailPolyline.setLatLngs(trailCoords);
+            } else {
+                trailPolyline = L.polyline(trailCoords, {
+                    color: '#00D4FF',
+                    weight: 2,
+                    opacity: 0.7,
+                    dashArray: '4, 8'
+                }).addTo(map);
+            }
+
+            document.getElementById('trailPoints').textContent = trailCoords.length;
+        }
+
+        // ─── FIREBASE ──────────────────────────────────────────────────────────────
+        window.saveConfig = function() {
+            const config = {
+                apiKey: document.getElementById('cfg_apiKey').value.trim(),
+                authDomain: document.getElementById('cfg_authDomain').value.trim(),
+                databaseURL: document.getElementById('cfg_databaseURL').value.trim(),
+                projectId: document.getElementById('cfg_projectId').value.trim(),
+                vehicleId: document.getElementById('cfg_vehicleId').value.trim() || 'auto_01'
+            };
+
+            if (!config.apiKey || !config.databaseURL) {
+                alert('Por favor ingresa al menos el API Key y el Database URL');
+                return;
+            }
+
+            localStorage.setItem('firebase_config', JSON.stringify(config));
+            document.getElementById('configModal').classList.remove('active');
+            document.getElementById('setupWarning').style.display = 'none';
+            connectToFirebase(config);
+        };
+
+        function connectToFirebase(config) {
+            const badge = document.getElementById('statusBadge');
+            const statusText = document.getElementById('statusText');
+            badge.className = 'status-badge connecting';
+            statusText.textContent = 'Conectando...';
+
+            try {
+                if (firebaseApp) {
+                    // Limpiar conexión anterior
+                    if (unsubscribe) unsubscribe();
+                }
+
+                const firebaseConfig = {
+                    apiKey: config.apiKey,
+                    authDomain: config.authDomain,
+                    databaseURL: config.databaseURL,
+                    projectId: config.projectId,
+                    storageBucket: `${config.projectId}.appspot.com`,
+                    messagingSenderId: '000000000000',
+                    appId: '1:000000000000:web:0000000000000000',
+                };
+
+                firebaseApp = initializeApp(firebaseConfig, 'gps-tracker-' + Date.now());
+                db = getDatabase(firebaseApp);
+
+                const vehicleRef = ref(db, `vehicle/location/${config.vehicleId}`);
+
+                unsubscribe = onValue(vehicleRef, (snapshot) => {
+                    const data = snapshot.val();
+                    if (data) {
+                        updateMap(data);
+                    } else {
+                        badge.className = 'status-badge offline';
+                        statusText.textContent = 'Sin datos del vehículo';
+                    }
+                }, (error) => {
+                    console.error('Firebase error:', error);
+                    badge.className = 'status-badge offline';
+                    statusText.textContent = 'Error de conexión';
+                });
+
+            } catch (error) {
+                console.error('Error iniciando Firebase:', error);
+                badge.className = 'status-badge offline';
+                statusText.textContent = 'Error: verifica la config';
+                alert('Error al conectar con Firebase. Verifica tus credenciales.\n\n' + error.message);
+            }
+        }
+
+        // ─── INICIALIZACIÓN ────────────────────────────────────────────────────────
+        window.centerMap = function() {
+            if (vehicleMarker) {
+                map.setView(vehicleMarker.getLatLng(), 16, { animate: true });
+            }
+        };
+
+        window.clearTrail = function() {
+            trailCoords = [];
+            if (trailPolyline) {
+                trailPolyline.setLatLngs([]);
+            }
+            document.getElementById('trailPoints').textContent = '0';
+        };
+
+        // Cargar config guardada
+        const savedConfig = localStorage.getItem('firebase_config');
+        if (savedConfig) {
+            const config = JSON.parse(savedConfig);
+            document.getElementById('cfg_apiKey').value = config.apiKey || '';
+            document.getElementById('cfg_authDomain').value = config.authDomain || '';
+            document.getElementById('cfg_databaseURL').value = config.databaseURL || '';
+            document.getElementById('cfg_projectId').value = config.projectId || '';
+            document.getElementById('cfg_vehicleId').value = config.vehicleId || 'auto_01';
+            document.getElementById('setupWarning').style.display = 'none';
+            connectToFirebase(config);
+        }
+
+    </script>
+
+</body>
+</html>
