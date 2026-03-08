@@ -755,16 +755,13 @@
                 <div style="
                     width: 48px;
                     height: 48px;
-                    background: rgba(255, 255, 255, 0.95);
-                    border-radius: 50%;
                     display: flex;
                     align-items: center;
                     justify-content: center;
                     position: relative;
-                    animation: blue-pulse 2s ease-in-out infinite;
                 ">
                     <svg viewBox="0 -3 100 38" xmlns="http://www.w3.org/2000/svg"
-                        style="width: 44px; height: auto; display: block; margin-top: 2px;">
+                        style="width: 48px; height: auto; display: block; filter: drop-shadow(0px 3px 4px rgba(0,0,0,0.4));">
                         <!-- Carroceria principal y llantas más altas -->
                         <path d="M 12 25 L 8 25 C 5 25, 3 23, 3 19 C 5 13, 14 10, 26 8 C 34 3, 48 0, 62 0 C 70 0, 74 2, 77 6 C 85 7, 89 9, 92 10 C 95 10, 97 13, 97 18 L 97 22 C 97 25, 95 25, 93 25 L 89.5 25 A 7.5 7.5 0 0 0 74.5 25 L 29.5 25 A 7.5 7.5 0 0 0 14.5 25 Z" fill="#000" />
                         <!-- Ventana / Cabina -->
@@ -789,12 +786,6 @@
                         <circle cx="82" cy="25" r="1.5" fill="#fff" />
                     </svg>
                 </div>
-                <style>
-                    @keyframes blue-pulse {
-                        0%, 100% { box-shadow: 0 0 0 0 rgba(0,212,255,0.5), 0 2px 8px rgba(0,0,0,0.2); }
-                        50% { box-shadow: 0 0 0 10px rgba(0,212,255,0.2), 0 4px 20px rgba(0,212,255,0.6); }
-                    }
-                </style>
             `,
             className: '',
             iconSize: [48, 48],
