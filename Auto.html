@@ -825,24 +825,31 @@
                 const vehicleRef = ref(db, `vehicle/location/${config.vehicleId}`);
 
                 unsubscribe = onValue(vehicleRef, (snapshot) => {
-                    const data = snapshot.val();
-                    if (data) {
-                        updateMap(data);
-                    } else {
-                        badge.className = 'status-badge offline';
-                        statusText.textContent = 'Sin datos del vehículo';
+                    try {
+                        const data = snapshot.val();
+                        if (data) {
+                            updateMap(data);
+                        } else {
+                            badge.className = 'status-badge offline';
+                            statusText.textContent = 'Sin datos del vehículo';
+                            console.log('Firebase conectado, pero no hay datos en la ruta:', `vehicle/location/${config.vehicleId}`);
+                        }
+                    } catch (e) {
+                        console.error('Error procesando datos de mapa:', e);
+                        statusText.textContent = 'Error visualizando mapa';
                     }
                 }, (error) => {
-                    console.error('Firebase error:', error);
+                    console.error('Firebase error de seguridad o conexión:', error);
                     badge.className = 'status-badge offline';
-                    statusText.textContent = 'Error de conexión';
+                    statusText.textContent = 'Error de permisos/conexión';
+                    alert('Firebase denegó el acceso (Error de Reglas) o hubo un corte.\n\nRevisa las reglas de seguridad en Firebase Database.');
                 });
 
             } catch (error) {
-                console.error('Error iniciando Firebase:', error);
+                console.error('Error crítico iniciando Firebase:', error);
                 badge.className = 'status-badge offline';
                 statusText.textContent = 'Error: verifica la config';
-                alert('Error al conectar con Firebase. Verifica tus credenciales.\n\n' + error.message);
+                alert('Fallo de inicialización. Verifica que no haya espacios en blanco en tus credenciales.\n\nDetalle: ' + error.message);
             }
         }
 
