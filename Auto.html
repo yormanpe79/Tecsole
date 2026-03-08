@@ -1,14 +1,16 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Rastreo GPS - Vehículo en Tiempo Real</title>
-    <meta name="description" content="Sistema de rastreo GPS para automóvil en tiempo real. Visualiza la ubicación del vehículo en el mapa con actualizaciones en vivo.">
+    <meta name="description"
+        content="Sistema de rastreo GPS para automóvil en tiempo real. Visualiza la ubicación del vehículo en el mapa con actualizaciones en vivo.">
 
     <!-- Leaflet.js CSS -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
-        integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
+        integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
 
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -123,8 +125,17 @@
         }
 
         @keyframes pulse-anim {
-            0%, 100% { opacity: 1; transform: scale(1); }
-            50% { opacity: 0.4; transform: scale(0.8); }
+
+            0%,
+            100% {
+                opacity: 1;
+                transform: scale(1);
+            }
+
+            50% {
+                opacity: 0.4;
+                transform: scale(0.8);
+            }
         }
 
         /* Main Layout */
@@ -334,8 +345,15 @@
         }
 
         @keyframes fadeInTrail {
-            from { opacity: 0; transform: scale(0); }
-            to { opacity: 1; transform: scale(1); }
+            from {
+                opacity: 0;
+                transform: scale(0);
+            }
+
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
         }
 
         /* Config modal */
@@ -346,7 +364,7 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0,0,0,0.7);
+            background: rgba(0, 0, 0, 0.7);
             z-index: 9999;
             align-items: center;
             justify-content: center;
@@ -447,8 +465,15 @@
         }
 
         @keyframes slideInRight {
-            from { transform: translateX(120%); opacity: 0; }
-            to { transform: translateX(0); opacity: 1; }
+            from {
+                transform: translateX(120%);
+                opacity: 0;
+            }
+
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
         }
 
         .config-btn {
@@ -469,6 +494,7 @@
         }
     </style>
 </head>
+
 <body>
 
     <!-- Header -->
@@ -481,7 +507,8 @@
             </div>
         </div>
         <div style="display:flex; gap:10px; align-items:center;">
-            <button class="config-btn" id="configBtn" onclick="document.getElementById('configModal').classList.add('active')">
+            <button class="config-btn" id="configBtn"
+                onclick="document.getElementById('configModal').classList.add('active')">
                 ⚙️ Firebase
             </button>
             <div class="status-badge connecting" id="statusBadge">
@@ -569,8 +596,7 @@
                 <div class="card-subvalue">Rastro del recorrido activo</div>
             </div>
 
-            <button class="btn-center"
-                style="background:linear-gradient(135deg,#FF4444,#FF1111); margin-top:auto;"
+            <button class="btn-center" style="background:linear-gradient(135deg,#FF4444,#FF1111); margin-top:auto;"
                 onclick="clearTrail()">
                 🗑️ Limpiar Recorrido
             </button>
@@ -618,7 +644,8 @@
     </div>
 
     <!-- Setup Warning -->
-    <div class="setup-warning" id="setupWarning" onclick="document.getElementById('configModal').classList.add('active')">
+    <div class="setup-warning" id="setupWarning"
+        onclick="document.getElementById('configModal').classList.add('active')">
         ⚠️ Configura Firebase para ver el vehículo en el mapa. Haz clic aquí.
     </div>
 
@@ -684,7 +711,7 @@
         let trailPolyline = null;
         let trailCoords = [];
 
-        window.initMap = function() {
+        window.initMap = function () {
             return map;
         };
 
@@ -753,7 +780,7 @@
         }
 
         // ─── FIREBASE ──────────────────────────────────────────────────────────────
-        window.saveConfig = function() {
+        window.saveConfig = function () {
             const config = {
                 apiKey: document.getElementById('cfg_apiKey').value.trim(),
                 authDomain: document.getElementById('cfg_authDomain').value.trim(),
@@ -780,20 +807,17 @@
             statusText.textContent = 'Conectando...';
 
             try {
-                if (firebaseApp) {
-                    // Limpiar conexión anterior
-                    if (unsubscribe) unsubscribe();
-                }
-
                 const firebaseConfig = {
                     apiKey: config.apiKey,
                     authDomain: config.authDomain,
                     databaseURL: config.databaseURL,
                     projectId: config.projectId,
-                    storageBucket: `${config.projectId}.appspot.com`,
-                    messagingSenderId: '000000000000',
-                    appId: '1:000000000000:web:0000000000000000',
                 };
+
+                // Inicializar Firebase con un nombre único para evitar conflictos si el usuario re-guarda
+                if (firebaseApp && unsubscribe) {
+                    unsubscribe();
+                }
 
                 firebaseApp = initializeApp(firebaseConfig, 'gps-tracker-' + Date.now());
                 db = getDatabase(firebaseApp);
@@ -823,13 +847,13 @@
         }
 
         // ─── INICIALIZACIÓN ────────────────────────────────────────────────────────
-        window.centerMap = function() {
+        window.centerMap = function () {
             if (vehicleMarker) {
                 map.setView(vehicleMarker.getLatLng(), 16, { animate: true });
             }
         };
 
-        window.clearTrail = function() {
+        window.clearTrail = function () {
             trailCoords = [];
             if (trailPolyline) {
                 trailPolyline.setLatLngs([]);
@@ -853,4 +877,5 @@
     </script>
 
 </body>
+
 </html>
