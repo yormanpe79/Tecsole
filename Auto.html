@@ -315,26 +315,64 @@
             color: #333;
         }
 
-        /* Responsive */
+        /* Responsive (Mobile view) */
         @media (max-width: 768px) {
-            .sidebar {
-                width: 100%;
-                max-height: 45vh;
-                border-right: none;
-                border-bottom: 1px solid var(--border);
-            }
-
             .main-layout {
                 flex-direction: column;
             }
 
-            body {
-                overflow: auto;
+            #map {
+                height: 65vh;
+                /* El mapa toma el 65% de la pantalla */
+                flex: none;
+                order: 1;
+                /* Obliga al mapa a estar arriba */
+                z-index: 1;
             }
 
-            #map {
-                height: 55vh;
-                min-height: 300px;
+            .sidebar {
+                width: 100%;
+                height: 35vh;
+                /* El sidebar toma el 35% de la pantalla */
+                border-right: none;
+                border-top: 1px solid var(--border);
+                order: 2;
+                /* El sidebar se va a la parte inferior */
+                padding: 12px;
+            }
+
+            body {
+                overflow: hidden;
+                /* Fija la pantalla, el scroll se queda dentro del sidebar si hay muchos datos */
+            }
+
+            /* Compactar la barra superior (Header) para ahorrar espacio */
+            header {
+                padding: 8px 16px;
+            }
+
+            .header-logo .icon {
+                width: 32px;
+                height: 32px;
+                font-size: 16px;
+            }
+
+            .header-logo h1 {
+                font-size: 16px;
+            }
+
+            .header-logo p {
+                font-size: 10px;
+            }
+
+            .status-badge {
+                padding: 6px 10px;
+                font-size: 11px;
+            }
+
+            /* El botón de configuración ya no es necesario arriba a la derecha en móviles porque está automatizado */
+            .config-btn {
+                display: none;
             }
         }
 
