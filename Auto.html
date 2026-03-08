@@ -9,8 +9,7 @@
         content="Sistema de rastreo GPS para automóvil en tiempo real. Visualiza la ubicación del vehículo en el mapa con actualizaciones en vivo.">
 
     <!-- Leaflet.js CSS -->
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
-        integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="" />
 
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -650,8 +649,7 @@
     </div>
 
     <!-- Leaflet.js -->
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
-        integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV/XN2GqBE=" crossorigin=""></script>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
 
     <!-- Firebase Web SDK v9 -->
     <script type="module">
@@ -869,17 +867,24 @@
         };
 
         // Cargar config guardada
-        const savedConfig = localStorage.getItem('firebase_config');
-        if (savedConfig) {
-            const config = JSON.parse(savedConfig);
-            document.getElementById('cfg_apiKey').value = config.apiKey || '';
-            document.getElementById('cfg_authDomain').value = config.authDomain || '';
-            document.getElementById('cfg_databaseURL').value = config.databaseURL || '';
-            document.getElementById('cfg_projectId').value = config.projectId || '';
-            document.getElementById('cfg_vehicleId').value = config.vehicleId || 'auto_01';
-            document.getElementById('setupWarning').style.display = 'none';
-            connectToFirebase(config);
-        }
+        const config = {
+            apiKey: 'AIzaSyBNYh8c2eJuGfoyxkOuUBu3xOm5DBfyb0E',
+            authDomain: 'rastreogps-app.firebaseapp.com',
+            databaseURL: 'https://rastreogps-app-default-rtdb.firebaseio.com',
+            projectId: 'rastreogps-app',
+            vehicleId: 'auto_01'
+        };
+
+        // Rellenar visualmente el popup de configuración por comodidad
+        document.getElementById('cfg_apiKey').value = config.apiKey;
+        document.getElementById('cfg_authDomain').value = config.authDomain;
+        document.getElementById('cfg_databaseURL').value = config.databaseURL;
+        document.getElementById('cfg_projectId').value = config.projectId;
+        document.getElementById('cfg_vehicleId').value = config.vehicleId;
+
+        // Ocultar alerta de configuración y conectar automáticamente
+        document.getElementById('setupWarning').style.display = 'none';
+        connectToFirebase(config);
 
     </script>
 
