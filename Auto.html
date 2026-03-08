@@ -287,7 +287,7 @@
 
         /* Custom Leaflet styles */
         .leaflet-container {
-            background: #0D1B2E !important;
+            background: #F0F3F7 !important;
         }
 
         /* Popup personalizado */
@@ -669,8 +669,8 @@
             zoomControl: true,
         });
 
-        // Tile layer oscuro (gratuito - OpenStreetMap)
-        L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+        // Tile layer claro (gratuito - OpenStreetMap / CartoDB)
+        L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
             attribution: '© OpenStreetMap contributors © CARTO',
             subdomains: 'abcd',
             maxZoom: 20
