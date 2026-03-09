@@ -847,10 +847,23 @@
             // Actualizar marcador
             if (!vehicleMarker) {
                 vehicleMarker = L.marker([lat, lon], { icon: vehicleIcon }).addTo(map);
-                if (isTracking) map.setView([lat, lon], 16, { animate: true });
+                map.setView([lat, lon], 16, { animate: true });
+                isTracking = true;
+                document.getElementById('centerBtn').style.color = '#0080FF';
             } else {
                 vehicleMarker.setLatLng([lat, lon]);
-                if (isTracking) map.setView([lat, lon], map.getZoom(), { animate: true });
+                if (isTracking) {
+                    // Si el rastreo está activo, sigue empujando el mapa suavemente
+                    map.panTo([lat, lon], { animate: true });
+                } else {
+                    // Si el usuario movió el mapa libremente, pero el vehículo se sale por completo de la zona visible:
+                    // Auto-centramos de nuevo para nunca perderlo.
+                    if (!map.getBounds().contains([lat, lon])) {
+                        map.panTo([lat, lon], { animate: true });
+                        isTracking = true;
+                        document.getElementById('centerBtn').style.color = '#0080FF';
+                    }
+                }
             }
 
             // Popup
