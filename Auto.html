@@ -760,8 +760,8 @@
                         animation: intense-green-pulse 3s infinite cubic-bezier(0.21, 0.53, 0.56, 1);
                     "></div>
 
-                    <svg viewBox="0 -3 100 38" xmlns="http://www.w3.org/2000/svg"
-                        style="width: 48px; height: auto; display: block; filter: drop-shadow(0px 3px 4px rgba(0,0,0,0.4)); position: relative; z-index: 1;">
+                    <svg class="vehicle-icon-svg" viewBox="0 -3 100 38" xmlns="http://www.w3.org/2000/svg"
+                        style="width: 48px; height: auto; display: block; filter: drop-shadow(0px 3px 4px rgba(0,0,0,0.4)); position: relative; z-index: 1; transition: transform 0.5s ease-out; transform-origin: center; transform: rotate(0deg);">
                         <!-- Carroceria principal y llantas más altas -->
                         <path d="M 12 25 L 8 25 C 5 25, 3 23, 3 19 C 5 13, 14 10, 26 8 C 34 3, 48 0, 62 0 C 70 0, 74 2, 77 6 C 85 7, 89 9, 92 10 C 95 10, 97 13, 97 18 L 97 22 C 97 25, 95 25, 93 25 L 89.5 25 A 7.5 7.5 0 0 0 74.5 25 L 29.5 25 A 7.5 7.5 0 0 0 14.5 25 Z" fill="#000" />
                         <!-- Ventana / Cabina -->
@@ -813,6 +813,24 @@
         let trailPolyline = null;
         let trailCoords = [];
 
+        let previousLat = null;
+        let previousLon = null;
+        let currentRotation = 0; // Guardar la rotación para suavizar giros
+
+        function calculateBearing(lat1, lon1, lat2, lon2) {
+            const toRad = Math.PI / 180;
+            const toDeg = 180 / Math.PI;
+
+            const dLon = (lon2 - lon1) * toRad;
+            lat1 = lat1 * toRad;
+            lat2 = lat2 * toRad;
+
+            const y = Math.sin(dLon) * Math.cos(lat2);
+            const x = Math.cos(lat1) * Math.sin(lat2) - Math.sin(lat1) * Math.cos(lat2) * Math.cos(dLon);
+
+            return (Math.atan2(y, x) * toDeg + 360) % 360;
+        }
+
         window.initMap = function () {
             return map;
         };
@@ -863,6 +881,44 @@
                         isTracking = true;
                         document.getElementById('centerBtn').style.color = '#0080FF';
                     }
+                }
+            }
+
+            // Calcular y aplicar rotación
+            let bearing = null;
+            if (data.bearing !== undefined && data.bearing !== null) {
+                bearing = data.bearing;
+            } else if (data.heading !== undefined && data.heading !== null) {
+                bearing = data.heading;
+            } else if (previousLat !== null && previousLon !== null) {
+                const dLat = Math.abs(lat - previousLat);
+                const dLon = Math.abs(lon - previousLon);
+                if (dLat > 0.00001 || dLon > 0.00001) { // Moverse al menos ~1 metro para cambiar de ángulo
+                    bearing = calculateBearing(previousLat, previousLon, lat, lon);
+                }
+            }
+
+            if (bearing !== null) {
+                // El auto apunta hacia la derecha por defecto (Este, 90 grados).
+                // Rotación: 0 deg = la imagen no rota, por lo que apunta al Este.
+                // Si la dir es Norte (0 deg), la rotación debe ser -90 grados.
+                let targetRotation = bearing - 90;
+
+                // Normalizar la diferencia de rotación actual para tomar el camino más corto (evitar giro de 360 grados por jitter)
+                let diff = (targetRotation - currentRotation) % 360;
+                if (diff > 180) diff -= 360;
+                if (diff < -180) diff += 360;
+
+                currentRotation += diff;
+            }
+
+            previousLat = lat;
+            previousLon = lon;
+
+            if (vehicleMarker && vehicleMarker.getElement()) {
+                const svg = vehicleMarker.getElement().querySelector('.vehicle-icon-svg');
+                if (svg) {
+                    svg.style.transform = `rotate(${currentRotation}deg)`;
                 }
             }
 
