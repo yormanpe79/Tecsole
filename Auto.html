@@ -9,7 +9,8 @@
         content="Sistema de rastreo GPS para automóvil en tiempo real. Visualiza la ubicación del vehículo en el mapa con actualizaciones en vivo.">
 
     <!-- Leaflet.js CSS -->
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+        integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
 
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -700,7 +701,8 @@
     </div>
 
     <!-- Leaflet.js -->
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+        integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
 
     <!-- Firebase Web SDK v9 -->
     <script type="module">
@@ -739,8 +741,8 @@
         const vehicleIcon = L.divIcon({
             html: `
                 <div style="
-                    width: 60px;
-                    height: 60px;
+                    width: 36px;
+                    height: 36px;
                     display: flex;
                     align-items: center;
                     justify-content: center;
@@ -761,7 +763,7 @@
                     "></div>
 
                     <img src="Car2_transparent.png" class="vehicle-icon-svg" 
-                        style="width: 60px; height: auto; display: block; filter: drop-shadow(0px 3px 4px rgba(0,0,0,0.4)); position: relative; z-index: 1; transition: transform 0.5s ease-out; transform-origin: center; transform: rotate(0deg);" 
+                        style="width: 36px; height: auto; display: block; filter: drop-shadow(0px 3px 4px rgba(0,0,0,0.4)); position: relative; z-index: 1; transition: transform 0.5s ease-out; transform-origin: center; transform: rotate(0deg);" 
                         alt="Auto en tiempo real"/>
                 </div>
                 <style>
@@ -782,9 +784,9 @@
                 </style>
             `,
             className: '',
-            iconSize: [60, 60],
-            iconAnchor: [30, 30],
-            popupAnchor: [0, -30]
+            iconSize: [36, 36],
+            iconAnchor: [18, 18],
+            popupAnchor: [0, -18]
         });
 
         let vehicleMarker = null;
