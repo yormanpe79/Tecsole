@@ -4,9 +4,23 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
-    <title>Calculadora Solar | Solar Expert Colombia</title>
-    <meta name="description" content="Calculadora Solar Simplificada. Cotiza tu proyecto en segundos.">
-    <meta name="author" content="Solar Expert">
+    <title>Calculadora Solar Gratuita | TECSOLE Colombia</title>
+    <meta name="description"
+        content="Calcule en segundos cuánto puede ahorrar con energía solar: potencia, inversión, ahorro mensual y tiempo de retorno. Herramienta gratuita de TECSOLE. Proyectos en toda Colombia.">
+    <meta name="author" content="TECSOLE - Tecnología y Soluciones Eficientes">
+    <link rel="canonical" href="https://www.tecsole.com/CalculadoraSolar.html">
+    <meta name="theme-color" content="#071F40">
+    <link rel="icon" type="image/jpeg" href="Logo.jpg">
+    <link rel="apple-touch-icon" href="Logo.jpg">
+
+    <meta property="og:type" content="website">
+    <meta property="og:locale" content="es_CO">
+    <meta property="og:site_name" content="TECSOLE">
+    <meta property="og:url" content="https://www.tecsole.com/CalculadoraSolar.html">
+    <meta property="og:title" content="Calculadora Solar Gratuita | TECSOLE">
+    <meta property="og:description"
+        content="Sepa cuánto puede ahorrar con energía solar antes de hablar con un vendedor. Sin costo y sin compromiso.">
+    <meta property="og:image" content="https://www.tecsole.com/Logo.jpg">
 
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
@@ -17,9 +31,9 @@
 
     <style>
         :root {
-            --primary: #0f172a;
-            --accent: #f59e0b;
-            --bg-page: #f8fafc;
+            --primary: #0B2F5F;
+            --accent: #DF7E2D;
+            --bg-page: #F5F7FA;
         }
 
         body {
@@ -50,23 +64,23 @@
 
         .excel-input:focus {
             border-color: var(--accent);
-            outline: 2px solid #fde68a;
+            outline: 2px solid rgba(223, 126, 45, .35);
         }
 
         .btn-calc {
-            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+            background: linear-gradient(135deg, #F0A03F 0%, #DF7E2D 100%);
             color: white;
             font-weight: 700;
             padding: 1rem 2rem;
             border-radius: 0.75rem;
             width: 100%;
             transition: transform 0.1s, box-shadow 0.2s;
-            box-shadow: 0 4px 6px -1px rgba(245, 158, 11, 0.3);
+            box-shadow: 0 4px 6px -1px rgba(223, 126, 45, 0.3);
         }
 
         .btn-calc:hover {
             transform: translateY(-2px);
-            box-shadow: 0 10px 15px -3px rgba(245, 158, 11, 0.4);
+            box-shadow: 0 10px 15px -3px rgba(223, 126, 45, 0.4);
         }
 
         .kpi-card {
@@ -191,10 +205,11 @@
 
     <div class="print-only header-print">
         <div class="flex items-center gap-4">
-            <i class="fas fa-solar-panel text-4xl text-yellow-500"></i>
+            <img src="Logo.jpg" alt="TECSOLE" style="height:54px;width:auto;background:#000;padding:4px 8px;border-radius:6px">
             <div>
-                <h1 class="text-2xl font-heading font-extrabold text-slate-800">PROPUESTA TÉCNICA Y FINANCIERA</h1>
-                <p class="text-sm text-gray-500">Proyecto Solar Fotovoltaico (CREG 174)</p>
+                <h1 class="text-2xl font-heading font-extrabold text-slate-800">PROPUESTA PRELIMINAR DE AHORRO SOLAR
+                </h1>
+                <p class="text-sm text-gray-500">TECSOLE · Tecnología y Soluciones Eficientes · ingenieria@tecsole.com · +57 305 434 5190</p>
             </div>
         </div>
         <div class="text-right">
@@ -203,27 +218,54 @@
         </div>
     </div>
 
-    <!-- Header Synced from index.html -->
-    <header class="no-print">
-        <div class="logo-container">
-            <img src="Logo.png" alt="Logotipo Solar Expert" class="logo-img">
-            <img src="Tecsole.png" alt="TECSOLE" class="brand-img">
+    <!-- Barra superior de contacto -->
+    <div class="topbar no-print">
+        <div class="wrap">
+            <span><i class="fas fa-location-dot"></i> Sede en Palmira, Valle del Cauca · Proyectos en toda
+                Colombia</span>
+            <span>
+                <a href="mailto:ingenieria@tecsole.com"><i class="fas fa-envelope"></i> ingenieria@tecsole.com</a>
+                &nbsp;·&nbsp;
+                <a href="tel:+573054345190"><i class="fas fa-phone"></i> +57 305 434 5190</a>
+            </span>
         </div>
+    </div>
+
+    <!-- Header sincronizado con index.html -->
+    <header class="no-print">
+        <a href="index.html" class="logo-container" aria-label="TECSOLE - Inicio">
+            <img src="Logo.jpg" alt="TECSOLE" class="brand-img">
+        </a>
         <nav aria-label="Navegación principal">
             <ul>
+                <li><a href="index.html#soluciones" class="nav-link">Soluciones</a></li>
+                <li><a href="index.html#proceso" class="nav-link">Cómo trabajamos</a></li>
                 <li>
-                    <a href="index.html" class="btn-nav btn-outline" title="Volver a página principal">
-                        <i class="fas fa-home"></i> Inicio
-                    </a>
+                    <button type="button" onclick="window.print()" class="btn-nav btn-outline">
+                        <i class="fas fa-file-pdf"></i> Descargar PDF
+                    </button>
                 </li>
                 <li>
-                    <button type="button" onclick="window.print()" class="btn-nav btn-cta">
-                        <i class="fas fa-file-pdf"></i> PDF / Imprimir
-                    </button>
+                    <a href="index.html#contacto" class="btn-nav btn-cta">
+                        <i class="fas fa-headset"></i> Hablar con un ingeniero
+                    </a>
                 </li>
             </ul>
         </nav>
     </header>
+
+    <!-- Introducción -->
+    <div class="no-print wrap" style="padding-top:34px;padding-bottom:6px">
+        <p class="eyebrow">Herramienta gratuita</p>
+        <h2 style="font-size:clamp(1.6rem,3.2vw,2.3rem);margin:10px 0 12px;color:var(--navy)">
+            Calcule su ahorro antes de hablar con un vendedor
+        </h2>
+        <p style="max-width:70ch;color:var(--ink-2)">
+            Complete sus datos y en segundos verá cuánta energía podría producir, cuánto ahorraría al mes y en cuánto
+            tiempo recuperaría la inversión. Es una estimación preliminar y no tiene ningún costo ni compromiso: la
+            cifra exacta se la entregamos después de una visita técnica, en cualquier ciudad del país.
+        </p>
+    </div>
 
     <!-- Main Container Layout (Igual a Predimensionado) -->
     <div class="container mx-auto px-4 lg:px-8 grid grid-cols-1 lg:grid-cols-12 gap-6 main-grid">
@@ -247,8 +289,8 @@
                                 <option value="5.5">Costa Atlántica (Santa Marta)</option>
                                 <option value="5.2">Barranquilla / Cartagena</option>
                                 <option value="5.1">Huila / Tolima</option>
-                                <option value="4.8">Valle del Cauca</option>
-                                <option value="4.6" selected>Antioquia / Eje Cafetero</option>
+                                <option value="4.8" selected>Valle del Cauca</option>
+                                <option value="4.6">Antioquia / Eje Cafetero</option>
                                 <option value="4.4">Llanos Orientales</option>
                                 <option value="4.2">Bogotá / Cundinamarca</option>
                                 <option value="3.8">Nariño / Sur</option>
@@ -340,9 +382,26 @@
         </div>
 
         <!-- Logo Watermark Placeholder (Visible de inicio) -->
-        <div id="logoPlaceholder" class="lg:col-span-8 flex items-center justify-center opacity-5 min-h-[500px]">
-            <img src="Tecsole.png" alt="Solar Expert Logo"
-                class="max-w-2xl w-full filter grayscale hover:grayscale-0 transition duration-500">
+        <!-- Panel de bienvenida (visible hasta que se calcula) -->
+        <div id="logoPlaceholder" class="lg:col-span-8 flex items-center justify-center min-h-[500px]">
+            <div style="background:linear-gradient(135deg,#071F40 0%,#050D1A 100%);border-radius:18px;
+                        padding:52px 44px;text-align:center;max-width:560px;width:100%;
+                        box-shadow:0 18px 46px rgba(11,47,95,.18)">
+                <img src="Logo.jpg" alt="TECSOLE"
+                    style="width:100%;max-width:340px;height:auto;mix-blend-mode:screen;margin:0 auto 8px">
+                <p style="font-family:'Montserrat',sans-serif;font-size:.68rem;font-weight:700;
+                          letter-spacing:.17em;text-transform:uppercase;color:#F0A03F;margin-bottom:26px">
+                    Tecnología y Soluciones Eficientes
+                </p>
+                <p style="color:#D7E3F0;font-size:1rem;line-height:1.6;margin:0">
+                    Complete el formulario y sus resultados aparecerán aquí:
+                    potencia recomendada, inversión estimada, ahorro mensual y tiempo de retorno.
+                </p>
+                <p style="color:#8FA8C2;font-size:.82rem;margin-top:18px">
+                    <i class="fas fa-lock" style="margin-right:6px"></i>
+                    Sus datos no se comparten con terceros.
+                </p>
+            </div>
         </div>
 
         <!-- RESULTADOS (Oculto inicialmente) -->
@@ -472,77 +531,79 @@
             </div>
         </div>
     </div>
-    </div>
 
     <!-- Script Lógica -->
-    <!-- Footer Synced from index.html -->
-    <footer class="no-print mt-12"
-        style="background: linear-gradient(to bottom, #0F172A, #020617); color: #94a3b8; padding: 3rem 5% 1.5rem; border-top: 2px solid #F59E0B;">
-        <div
-            style="max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 2rem; margin-bottom: 2rem;">
-            <!-- Columna 1: Contacto -->
-            <div>
-                <h4
-                    style="color: #F59E0B; font-family: 'Montserrat', sans-serif; font-size: 0.9rem; font-weight: 700; text-transform: uppercase; margin-bottom: 1rem; letter-spacing: 1px;">
-                    Contacto</h4>
-                <p style="margin: 0.5rem 0; font-size: 0.85rem; line-height: 1.8;"><i class="fas fa-envelope"
-                        style="color: #F59E0B; margin-right: 8px; width: 16px;"></i> <a
-                        href="mailto:ingenieria@tecsole.com"
-                        style="color: #94a3b8; text-decoration: none;">ingenieria@tecsole.com</a></p>
-                <p style="margin: 0.5rem 0; font-size: 0.85rem; line-height: 1.8;"><i class="fas fa-phone"
-                        style="color: #F59E0B; margin-right: 8px; width: 16px;"></i> <a href="tel:+573054345190"
-                        style="color: #94a3b8; text-decoration: none;">+57 305 4345190</a></p>
-                <p style="margin: 0.5rem 0; font-size: 0.85rem; line-height: 1.8;"><i class="fab fa-whatsapp"
-                        style="color: #F59E0B; margin-right: 8px; width: 16px;"></i> <a
-                        href="https://wa.me/573054345190" target="_blank" rel="noopener"
-                        style="color: #94a3b8; text-decoration: none;">WhatsApp</a></p>
-            </div>
+    <!-- Footer corporativo sincronizado con index.html -->
+    <footer class="site no-print">
+        <div class="wrap">
+            <div class="fgrid">
+                <div>
+                    <img src="Logo.jpg" alt="TECSOLE" class="brand-img">
+                    <span class="brand-slogan">Tecnología y Soluciones Eficientes</span>
+                    <p>Energía solar, ingeniería eléctrica, eficiencia y desarrollo tecnológico. Sede en Palmira,
+                        Valle del Cauca, con proyectos en toda Colombia.</p>
+                    <div class="social">
+                        <a href="https://www.linkedin.com/in/yorman-peralta-garcia/" target="_blank" rel="noopener"
+                            aria-label="LinkedIn"><i class="fab fa-linkedin"></i></a>
+                        <a href="https://wa.me/573054345190" target="_blank" rel="noopener"
+                            aria-label="WhatsApp"><i class="fab fa-whatsapp"></i></a>
+                    </div>
+                </div>
 
-            <!-- Columna 2: Enlaces Rápidos -->
-            <div>
-                <h4
-                    style="color: #F59E0B; font-family: 'Montserrat', sans-serif; font-size: 0.9rem; font-weight: 700; text-transform: uppercase; margin-bottom: 1rem; letter-spacing: 1px;">
-                    Link</h4>
-                <p style="margin: 0.5rem 0; font-size: 0.85rem; line-height: 1.8;"><a href="index.html#perfil"
-                        style="color: #94a3b8; text-decoration: none; transition: color 0.3s;">Perfil Profesional</a>
-                </p>
-                <p style="margin: 0.5rem 0; font-size: 0.85rem; line-height: 1.8;"><a href="index.html#experiencia"
-                        style="color: #94a3b8; text-decoration: none; transition: color 0.3s;">Proyectos Destacados</a>
-                </p>
+                <div>
+                    <h5>Soluciones</h5>
+                    <ul>
+                        <li><a href="index.html#soluciones">Energia solar</a></li>
+                        <li><a href="index.html#soluciones">Instalaciones electricas</a></li>
+                        <li><a href="index.html#soluciones">Software a la medida</a></li>
+                        <li><a href="index.html#soluciones">Automatizacion y monitoreo</a></li>
+                    </ul>
+                </div>
 
-            </div>
+                <div>
+                    <h5>Empresa</h5>
+                    <ul>
+                        <li><a href="index.html#nosotros">Nosotros</a></li>
+                        <li><a href="index.html#sectores">Sectores</a></li>
+                        <li><a href="index.html#proceso">Como trabajamos</a></li>
+                        <li><a href="index.html#trabajo">Proyectos</a></li>
+                    </ul>
+                </div>
 
-            <!-- Columna 3: Servicios -->
-            <div>
-                <h4
-                    style="color: #F59E0B; font-family: 'Montserrat', sans-serif; font-size: 0.9rem; font-weight: 700; text-transform: uppercase; margin-bottom: 1rem; letter-spacing: 1px;">
-                    Servicios</h4>
-                <p style="margin: 0.5rem 0; font-size: 0.85rem; line-height: 1.8;">• Ingeniería Eléctrica</p>
-                <p style="margin: 0.5rem 0; font-size: 0.85rem; line-height: 1.8;">• Energía Solar Fotovoltaica</p>
-                <p style="margin: 0.5rem 0; font-size: 0.85rem; line-height: 1.8;">• Análisis de Datos</p>
-                <p style="margin: 0.5rem 0; font-size: 0.85rem; line-height: 1.8;">• Consultoría Técnica</p>
-            </div>
+                <div>
+                    <h5>Contacto</h5>
+                    <ul>
+                        <li><a href="mailto:ingenieria@tecsole.com"><i class="fas fa-envelope"></i>
+                                ingenieria@tecsole.com</a></li>
+                        <li><a href="tel:+573054345190"><i class="fas fa-phone"></i> +57 305 434 5190</a></li>
+                        <li><a href="https://wa.me/573054345190" target="_blank" rel="noopener"><i
+                                    class="fab fa-whatsapp"></i> WhatsApp</a></li>
+                        <li><i class="fas fa-location-dot"></i> Palmira, Valle del Cauca</li>
+                    </ul>
+                </div>
 
-            <!-- Columna 4: Redes Sociales -->
-            <div>
-                <h4
-                    style="color: #F59E0B; font-family: 'Montserrat', sans-serif; font-size: 0.9rem; font-weight: 700; text-transform: uppercase; margin-bottom: 1rem; letter-spacing: 1px;">
-                    Sígueme</h4>
-                <div style="display: flex; gap: 1rem; font-size: 1.5rem; margin-top: 1rem;">
-                    <a href="https://www.linkedin.com/in/yorman-peralta-garcia/" target="_blank" rel="noopener"
-                        aria-label="LinkedIn" style="color: #94a3b8; transition: color 0.3s;"><i
-                            class="fab fa-linkedin"></i></a>
+                <div class="qr">
+                    <img src="tecsole QR.png" alt="Codigo QR con los datos de contacto de TECSOLE">
+                    <p>Escanee y guarde<br>nuestro contacto</p>
                 </div>
             </div>
-        </div>
 
-        <!-- Copyright -->
-        <div
-            style="border-top: 1px solid #1e293b; padding-top: 1.5rem; text-align: center; font-size: 0.75rem; color: #64748B;">
-            <p style="margin: 0;">&copy; 2026 Yorman Peralta García - Ingeniero Electricista | Matrícula Profesional |
-                Todos los derechos reservados.</p>
+            <div class="fbottom">
+                <span>&copy; <span id="yearCalc">2026</span> TECSOLE - Tecnologia y Soluciones Eficientes. Todos los
+                    derechos reservados.</span>
+                <span>
+                    <a href="PoliticaDatos.html">Politica de datos</a> &middot;
+                    <a href="TerminosCondiciones.html">Terminos y condiciones</a>
+                </span>
+            </div>
         </div>
     </footer>
+
+    <a class="wa-float no-print"
+        href="https://wa.me/573054345190?text=Hola%20TECSOLE%2C%20us%C3%A9%20la%20calculadora%20y%20quiero%20una%20cotizaci%C3%B3n%20real."
+        target="_blank" rel="noopener" aria-label="Escribir por WhatsApp">
+        <i class="fab fa-whatsapp"></i>
+    </a>
 
     <script>
         function generateId() {
@@ -763,6 +824,12 @@
                 .then(data => console.log('Envío exitoso:', data))
                 .catch(error => console.error('Error enviando:', error));
         }
+
+        /* Año dinámico en el pie de página */
+        (function () {
+            var y = document.getElementById('yearCalc');
+            if (y) y.textContent = new Date().getFullYear();
+        })();
     </script>
 </body>
 
